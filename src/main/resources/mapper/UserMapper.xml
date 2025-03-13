@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.pgthinker.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="me.pgthinker.model.domain.User">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="departmentId" column="department_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,password,
+        department_id
+    </sql>
+
+
+    <!-- 角色 ResultMap -->
+    <resultMap id="RoleResultMap" type="me.pgthinker.model.domain.Role">
+        <id property="id" column="role_id" jdbcType="BIGINT"/>
+        <result property="name" column="role_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 权限 ResultMap -->
+    <resultMap id="PermissionResultMap" type="me.pgthinker.model.domain.Permission">
+        <id property="id" column="permission_id" jdbcType="BIGINT"/>
+        <result property="name" column="permission_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 用户完整 ResultMap -->
+    <resultMap id="UserResultMap" type="me.pgthinker.model.domain.User" extends="BaseResultMap">
+        <!-- 角色映射 -->
+        <collection property="roles" ofType="me.pgthinker.model.domain.Role">
+            <id property="id" column="role_id" jdbcType="BIGINT"/>
+            <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        </collection>
+        <!-- 权限映射 -->
+        <collection property="permissions" ofType="me.pgthinker.model.domain.Permission">
+            <id property="id" column="permission_id" jdbcType="BIGINT"/>
+            <result property="name" column="permission_name" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUserWithRolesAndPermissions" resultMap="UserResultMap">
+        SELECT u.*,
+               r.id AS role_id, r.name AS role_name,
+               p.id AS permission_id, p.name AS permission_name
+        FROM "user" u
+                 LEFT JOIN user_role ur ON u.id = ur.user_id
+                 LEFT JOIN role r ON ur.role_id = r.id
+                 LEFT JOIN role_permission rp ON r.id = rp.role_id
+                 LEFT JOIN permission p ON rp.permission_id = p.id
+        WHERE u.username = #{username}
+    </select>
+</mapper>
