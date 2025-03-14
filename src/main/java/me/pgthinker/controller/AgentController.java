@@ -34,4 +34,9 @@ public class AgentController {
             return result.getOutput();
         }).flatMapSequential(Flux::just);
     }
+
+    @PostMapping("/chat/simpleTest")
+    public String simpleChat(@RequestBody ChatRequest request) {
+        return agentChatService.simpleChatTest(request);
+    }
 }

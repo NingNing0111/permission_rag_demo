@@ -18,7 +18,7 @@ spring:
       pgvector:
         initialize-schema: true
         table-name: vector_store_1536
-        remove-existing-vector-store-table: true
+        remove-existing-vector-store-table: false
 
   datasource:
     driver-class-name: org.postgresql.Driver

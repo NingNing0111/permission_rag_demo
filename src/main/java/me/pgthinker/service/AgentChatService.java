@@ -19,4 +19,7 @@ public interface AgentChatService {
      * @return
      */
     Flux<ChatResponse> generalChat(ChatRequest chatRequest);
+
+
+    String simpleChatTest(ChatRequest chatRequest);
 }

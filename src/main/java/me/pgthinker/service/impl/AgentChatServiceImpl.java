@@ -9,6 +9,7 @@ import me.pgthinker.model.vo.chat.SimpleMessage;
 import me.pgthinker.service.AgentChatService;
 import me.pgthinker.service.VectorSearchService;
 import org.springframework.ai.chat.messages.*;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -36,12 +37,25 @@ public class AgentChatServiceImpl implements AgentChatService {
 
     private final VectorSearchService vectorSearchService;
     private final static Integer TOP_K = 5;
-    private final StreamingChatModel chatModel;
+    private final StreamingChatModel streamingChatModel;
+    private final ChatModel chatModel;
     @Value("classpath:prompt/RAG.st")
     private Resource systemRAGResource;
 
     @Override
     public Flux<ChatResponse> generalChat(ChatRequest chatRequest) {
+        List<Message> handledChatMessageList = getChatMessage(chatRequest);
+        return streamingChatModel.stream(new Prompt(handledChatMessageList));
+    }
+
+    @Override
+    public String simpleChatTest(ChatRequest chatRequest) {
+        List<Message> chatMessage = getChatMessage(chatRequest);
+        ChatResponse response = chatModel.call(new Prompt(chatMessage));
+        return response.getResult().getOutput().getText();
+    }
+
+    private List<Message> getChatMessage(ChatRequest chatRequest) {
         List<SimpleMessage> historySimpleMessage = chatRequest.getHistorySimpleMessage();
         String question = chatRequest.getQuestion();
         Integer maxLength = chatRequest.getMaxLength();
@@ -60,7 +74,7 @@ public class AgentChatServiceImpl implements AgentChatService {
         chatMessageList.add(systemMessage);
         chatMessageList.addAll(historyMessage);
         List<Message> handledChatMessageList = checkMessageLength(chatMessageList, maxLength);
-        return chatModel.stream(new Prompt(handledChatMessageList));
+        return handledChatMessageList;
     }
 
     private List<Message> transferAiMessage(List<SimpleMessage> messages) {
