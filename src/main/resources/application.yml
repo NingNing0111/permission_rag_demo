@@ -1,5 +1,9 @@
 server:
   port: 8787
+  servlet:
+    context-path: /api
+
+
 spring:
   application:
     name: permission_demo
@@ -7,10 +11,14 @@ spring:
     openai:
       base-url: https://api.mnzdna.xyz
       api-key: sk-KgvugzpKzki15GFxB72e7782De844b23B3E4Fc6dDf40B29a
+      chat:
+        options:
+          model: gpt-3.5-turbo
     vectorstore:
       pgvector:
         initialize-schema: true
         table-name: vector_store_1536
+        remove-existing-vector-store-table: true
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -42,11 +50,22 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 security:
   secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000 # a day
   allow-list:
-#    - "/**"
+    - "/v3/**"
+    - "/swagger-ui/**"
+    - "/doc.html"
+    - "/webjars/**"
+    - "/auth/login"
+    - "/agent/chat/**"
+    - "/favicon.ico"
 
 # MinIO
 minio:
@@ -54,3 +73,19 @@ minio:
   access-key: admin
   secret-key: admin123
   bucket-name: permission-demo
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    enable-open-api: true
+    enable-group: true
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: me.pgthinker.controller

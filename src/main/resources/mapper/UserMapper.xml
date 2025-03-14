@@ -12,8 +12,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,username,password,
-        department_id
+        "id", "username", "password",
+        "department_id"
     </sql>
 
 
@@ -45,13 +45,13 @@
 
     <select id="getUserWithRolesAndPermissions" resultMap="UserResultMap">
         SELECT u.*,
-               r.id AS role_id, r.name AS role_name,
-               p.id AS permission_id, p.name AS permission_name
+               r."id" AS role_id, r.name AS role_name,
+               p."id" AS permission_id, p.name AS permission_name
         FROM "user" u
-                 LEFT JOIN user_role ur ON u.id = ur.user_id
-                 LEFT JOIN role r ON ur.role_id = r.id
-                 LEFT JOIN role_permission rp ON r.id = rp.role_id
-                 LEFT JOIN permission p ON rp.permission_id = p.id
+                 LEFT JOIN "user_role" ur ON u."id" = ur.user_id
+                 LEFT JOIN "role" r ON ur.role_id = r."id"
+                 LEFT JOIN "role_permission" rp ON r."id" = rp.role_id
+                 LEFT JOIN "permission" p ON rp.permission_id = p."id"
         WHERE u.username = #{username}
     </select>
 </mapper>

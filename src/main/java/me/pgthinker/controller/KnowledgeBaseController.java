@@ -6,10 +6,9 @@ import me.pgthinker.common.ResultUtils;
 import me.pgthinker.model.vo.KnowledgeBaseVO;
 import me.pgthinker.service.KnowledgeBaseService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Project: me.pgthinker.controller
@@ -25,16 +24,22 @@ public class KnowledgeBaseController {
 
     private final KnowledgeBaseService knowledgeBaseService;
 
-    @PostMapping("/add")
+    @PostMapping("/create")
     @PreAuthorize("hasAnyRole('admin')")
     public BaseResponse<String> addKnowledgeBase(@RequestBody KnowledgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.addKnowledgeBase(knowledgeBaseVO));
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/remove")
     @PreAuthorize("hasAnyRole('admin')")
     public BaseResponse<Integer> removeKnowledgeBase(@RequestBody KnowledgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.removeKnowledgeBase(knowledgeBaseVO));
+    }
+
+    @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('admin','leader','staff')")
+    public BaseResponse<List<KnowledgeBaseVO>> listKnowledgeBase() {
+        return ResultUtils.success(knowledgeBaseService.knowledgeList());
     }
 
 

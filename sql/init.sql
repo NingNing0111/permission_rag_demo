@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS vector;
 -- 部门表
 CREATE TABLE department
 (
@@ -67,19 +68,23 @@ CREATE TABLE user_role
 -- 知识库
 CREATE TABLE knowledge_base
 (
-    id          uuid  PRIMARY KEY       NOT NULL,
+    id          varchar(32)  PRIMARY KEY       NOT NULL,
     name        varchar(100) NOT NULL,
     description TEXT,
     creator BIGINT NOT NULL
 );
 
+
 -- 文档表
 CREATE TABLE document_entity
 (
     id        BIGSERIAL PRIMARY KEY,
-    file_name VARCHAR(256) NOT NULL,
-    path      VARCHAR(256) NOT NULL,
+    file_name VARCHAR(512) NOT NULL,
+    path      VARCHAR(512) NOT NULL,
     uploader  BIGINT       NOT NULL,
-    base_id   uuid         NOT NULL,
+    base_id   varchar(32)         NOT NULL,
     FOREIGN KEY (base_id) REFERENCES knowledge_base (id) on DELETE CASCADE
 );
+
+drop table knowledge_base;
+drop table document_entity;

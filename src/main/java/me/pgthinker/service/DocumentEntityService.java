@@ -1,7 +1,10 @@
 package me.pgthinker.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.pgthinker.model.domain.DocumentEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
+import me.pgthinker.model.vo.DocumentVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author pgthinker
@@ -10,4 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface DocumentEntityService extends IService<DocumentEntity> {
 
+    DocumentVO uploadFile(MultipartFile file, String knowledgeBaseId);
+
+    Page<DocumentVO> managerList();
 }
